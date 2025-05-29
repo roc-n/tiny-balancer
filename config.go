@@ -22,14 +22,16 @@ ___ _ _  _ _   _ ___  ____ _    ____ _  _ ____ ____ ____
 
 // Config configuration details of balancer
 type Config struct {
-	SSLCertificateKey   string      `yaml:"ssl_certificate_key"`
-	Location            []*Location `yaml:"location"`
-	Schema              string      `yaml:"schema"`
-	Port                int         `yaml:"port"`
-	SSLCertificate      string      `yaml:"ssl_certificate"`
-	HealthCheck         bool        `yaml:"tcp_health_check"`
-	HealthCheckInterval uint        `yaml:"health_check_interval"`
-	MaxAllowed          uint        `yaml:"max_allowed"`
+	SSLCertificateKey   string       `yaml:"ssl_certificate_key"`
+	Location            []*Location  `yaml:"location"`
+	Schema              string       `yaml:"schema"`
+	Port                int          `yaml:"port"`
+	SSLCertificate      string       `yaml:"ssl_certificate"`
+	HealthCheck         bool         `yaml:"tcp_health_check"`
+	HealthCheckInterval uint         `yaml:"health_check_interval"`
+	MaxAllowed          uint         `yaml:"max_allowed"`
+	TokenBucketLimit    *BucketLimit `yaml:"token_bucket_limit"`
+	LeakyBucket         *BucketLimit `yaml:"leaky_bucket_limit"`
 }
 
 // Location routing details of balancer
@@ -37,6 +39,12 @@ type Location struct {
 	Pattern     string   `yaml:"pattern"`
 	ProxyPass   []string `yaml:"proxy_pass"`
 	BalanceMode string   `yaml:"balance_mode"`
+}
+
+type BucketLimit struct {
+	Enabled  bool `yaml:"enabled"`
+	Capacity int  `yaml:"capacity"`
+	Rate     int  `yaml:"rate"`
 }
 
 // ReadConfig read configuration from `fileName` file

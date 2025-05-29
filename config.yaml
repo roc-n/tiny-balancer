@@ -8,9 +8,7 @@ ssl_certificate:
 ssl_certificate_key:
 tcp_health_check: true
 health_check_interval: 3      # health check interval (second)
-# The maximum number of requests that the balancer can handle at the same time
-# 0 refers to no limit to the maximum number of requests
-max_allowed: 100
+
 location:                     # route matching for reverse proxy
   - pattern: /
     proxy_pass:                   # URL of the reverse proxy
@@ -19,3 +17,15 @@ location:                     # route matching for reverse proxy
     - "https://192.168.1.2"
     - "http://my-server.com"
     balance_mode: round-robin     # load balancing algorithm
+
+# The maximum number of requests that the balancer can handle at the same time
+# 0 refers to no limit to the maximum number of requests
+max_allowed: 0
+token_bucket_limit:
+  enabled: true              # enable token bucket
+  capacity: 1000             # maximum number of tokens
+  rate: 50                   # rate of token generation per second
+leaky_bucket_limit:
+  enabled: false             # enable leaky bucket
+  capacity: 1000             # maximum number of tokens
+  rate: 0.02                 # rate of leaky bucket (tokens per second)

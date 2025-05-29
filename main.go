@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/roc-n/tiny-balancer/proxy"
@@ -32,9 +33,23 @@ func main() {
 		}
 		router.Handle(l.Pattern, httpProxy)
 	}
+
+	// #! 限流处理 ###########
+	// 同一时间并发数限制
 	if config.MaxAllowed > 0 {
 		router.Use(maxAllowedMiddleware(config.MaxAllowed))
 	}
+	// 令牌桶限制
+	if config.TokenBucketLimit.Enabled {
+		tb := NewTokenBucket(config.TokenBucketLimit.Capacity, config.TokenBucketLimit.Rate)
+		router.Use(tokenBucketMiddleware(tb))
+	}
+	// 漏桶限制
+	if config.LeakyBucket.Enabled {
+		leakRate := config.LeakyBucket.Rate * int(time.Second)
+		router.Use(leakyBucketMiddleware(config.LeakyBucket.Capacity, time.Duration(leakRate)))
+	}
+
 	svr := http.Server{
 		Addr:    ":" + strconv.Itoa(config.Port),
 		Handler: router,
