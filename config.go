@@ -32,6 +32,7 @@ type Config struct {
 	MaxAllowed          uint         `yaml:"max_allowed"`
 	TokenBucketLimit    *BucketLimit `yaml:"token_bucket_limit"`
 	LeakyBucket         *BucketLimit `yaml:"leaky_bucket_limit"`
+	IPBlacklist         []string     `yaml:"ip_blacklist"`
 }
 
 // Location routing details of balancer

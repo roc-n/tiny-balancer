@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/roc-n/tiny-balancer/proxy"
 )
 
 // #! 初级并发控制实现
@@ -26,8 +27,6 @@ func maxAllowedMiddleware(n uint) mux.MiddlewareFunc {
 		})
 	}
 }
-
-// #################################
 
 // #! 令牌桶限流
 type TokenBucket struct {
@@ -79,10 +78,7 @@ func tokenBucketMiddleware(tb *TokenBucket) mux.MiddlewareFunc {
 	}
 }
 
-// #################################
-
 // #! 漏桶限流
-
 type leakyJob struct {
 	w    http.ResponseWriter
 	r    *http.Request
@@ -113,6 +109,20 @@ func leakyBucketMiddleware(bucketSize int, leakRate time.Duration) mux.Middlewar
 			default:
 				http.Error(w, "Too Many Requests", http.StatusTooManyRequests)
 			}
+		})
+	}
+}
+
+// 静态IP黑名单实现
+func ipBlacklistMiddleware(blacklist map[string]struct{}) mux.MiddlewareFunc {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ip := proxy.GetIP(r)
+			if _, blocked := blacklist[ip]; blocked {
+				http.Error(w, "Forbidden", http.StatusForbidden)
+				return
+			}
+			next.ServeHTTP(w, r)
 		})
 	}
 }

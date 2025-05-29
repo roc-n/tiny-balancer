@@ -34,6 +34,15 @@ func main() {
 		router.Handle(l.Pattern, httpProxy)
 	}
 
+	// #! IP黑名单处理 ###########
+	if len(config.IPBlacklist) > 0 {
+		blacklist := make(map[string]struct{}, len(config.IPBlacklist))
+		for _, ip := range config.IPBlacklist {
+			blacklist[ip] = struct{}{}
+		}
+		router.Use(ipBlacklistMiddleware(blacklist))
+	}
+
 	// #! 限流处理 ###########
 	// 同一时间并发数限制
 	if config.MaxAllowed > 0 {

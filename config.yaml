@@ -18,8 +18,6 @@ location:                     # route matching for reverse proxy
     - "http://my-server.com"
     balance_mode: round-robin     # load balancing algorithm
 
-# The maximum number of requests that the balancer can handle at the same time
-# 0 refers to no limit to the maximum number of requests
 max_allowed: 0
 token_bucket_limit:
   enabled: true              # enable token bucket
@@ -28,4 +26,8 @@ token_bucket_limit:
 leaky_bucket_limit:
   enabled: false             # enable leaky bucket
   capacity: 1000             # maximum number of tokens
-  rate: 0.02                 # rate of leaky bucket (tokens per second)
+  rate: 0.02                 # determines how often a request is processed
+
+ip_blacklist:
+  - "192.168.1.100"
+  - "10.0.0.1"
