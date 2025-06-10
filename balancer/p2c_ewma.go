@@ -160,7 +160,7 @@ func (p *P2C_EWMA) RequestCtx() func(string) {
 		p.Lock()
 		defer p.Unlock()
 
-		h, _ := p.loadMap[host]
+		h := p.loadMap[host]
 
 		now := time.Now().UnixNano()
 

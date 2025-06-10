@@ -6,10 +6,9 @@
 * `round-robin`
 * `random`
 * `power of 2 random choice`
-* `consistent hash`
-* `consistent hash with bounded`
 * `ip-hash`
 * `least-load`
+* `power of 2 random choice with EWMA`
 
 ## 改进
 - 实现综合考虑并发与延迟的p2c-ewma算法
@@ -19,7 +18,7 @@
 ## 运行
 配置 `config.yaml`文件，编译并运行如下： 
 ```shell
-> ./mini-balancer
+> ./tiny-balancer
 
 ___ _ _  _ _   _ ___  ____ _    ____ _  _ ____ ____ ____ 
  |  | |\ |  \_/  |__] |__| |    |__| |\ | |    |___ |__/ 
