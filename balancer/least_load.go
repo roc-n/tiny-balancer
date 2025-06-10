@@ -10,11 +10,6 @@ import (
 	fibHeap "github.com/starwander/GoFibonacciHeap"
 )
 
-type host struct {
-	name string
-	load uint64
-}
-
 func init() {
 	factories[LeastLoadBalancer] = NewLeastLoad
 }
